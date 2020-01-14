@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">API課題</string>
+    <string name="tv_name">名前</string>
+    <string name="tv_bio">自己紹介</string>
+    <string name="tv_email">メールアドレス</string>
+    <string name="tv_password">パスワード</string>
+    <string name="tv_password_confirmation">パスワード確認用</string>
+    <string name="bt_sign_up">登録</string>
+</resources>
