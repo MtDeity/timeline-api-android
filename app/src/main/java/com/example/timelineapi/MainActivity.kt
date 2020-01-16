@@ -13,10 +13,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-    lateinit var responseName: String
-    lateinit var responseBio: String
-    lateinit var responseEmail: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -92,11 +88,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String) {
-            //空白 -> 通信エラー
-            //Validation failed -> 正しく入力されていません
-            //そのemailは登録されている -> そのメールアドレスはすでに登録されています
-            //成功 -> 登録完了
-
             lateinit var status: String
             var responseName = "name初期値"
             var responseBio = "bio初期値"
@@ -117,8 +108,14 @@ class MainActivity : AppCompatActivity() {
                     File(filesDir, tokenFile).bufferedWriter().use { writer ->
                         writer.write(tokenContent)
                     }
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailは登録されている") {
+                    status = "登録済みのメールアドレスです。"
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString().contains("blank")) {
+                    status = "未入力の項目があります。"
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString().contains("Password confirmation")) {
+                    status = "確認用パスワードが一致しません。"
                 } else {
-                    status = "入力エラー"
+                    status = "登録失敗"
                 }
             }
 
