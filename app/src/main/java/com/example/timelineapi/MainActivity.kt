@@ -8,10 +8,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.PrintStream
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -41,8 +38,6 @@ class MainActivity : AppCompatActivity() {
         val receiver = SignUpReceiver()
         receiver.execute(emailStr, passwordStr, passwordConfirmationStr, nameStr, bioStr)
     }
-
-
 
     private inner class SignUpReceiver() : AsyncTask<String, String, String>() {
         override fun doInBackground(vararg params: String): String {
@@ -81,8 +76,15 @@ class MainActivity : AppCompatActivity() {
 
                 val inputStream = urlConnection.inputStream
                 result = is2String(inputStream)
+                inputStream.close()
             }catch(e: Exception){
                 e.printStackTrace()
+
+                val errorStream = urlConnection?.errorStream;
+                result = is2String(errorStream)
+                errorStream?.close()
+                Log.i("TimelineApiError", result)
+
             }finally {
                 urlConnection?.disconnect()
                 return result
@@ -101,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             var responseEmail = "email初期値"
 
             if (result == "") {
-                status = "登録失敗"
+                status = "通信エラー"
             } else {
                 val rootJSON = JSONObject(result)
                 if (rootJSON.has("id")) {
@@ -109,6 +111,12 @@ class MainActivity : AppCompatActivity() {
                     responseName = rootJSON.getString("name")
                     responseBio = rootJSON.getString("bio")
                     responseEmail = rootJSON.getString("email")
+                    val responseToken = rootJSON.getString("token")
+                    val tokenFile = "token.txt"
+                    val tokenContent = responseToken
+                    File(filesDir, tokenFile).bufferedWriter().use { writer ->
+                        writer.write(tokenContent)
+                    }
                 } else {
                     status = "入力エラー"
                 }
@@ -125,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun is2String(stream: InputStream): String {
+    private fun is2String(stream: InputStream?): String {
         val sb = StringBuilder()
         val reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
         var line = reader.readLine()
