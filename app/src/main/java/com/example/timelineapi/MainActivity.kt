@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.io.*
@@ -81,41 +82,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String) {
-            lateinit var status: String
-            var responseName = "name初期値"
-            var responseBio = "bio初期値"
-            var responseEmail = "email初期値"
+            val aaa = findViewById<TextView>(R.id.tvErrorMessage)
 
             if (result == "") {
-                status = "通信エラー"
+                aaa.text = "通信エラー"
             } else {
                 val rootJSON = JSONObject(result)
                 if (rootJSON.has("id")) {
-                    status = "ログイン完了"
-                    responseName = rootJSON.getString("name")
-                    responseBio = rootJSON.getString("bio")
-                    responseEmail = rootJSON.getString("email")
                     val responseToken = rootJSON.getString("token")
                     val tokenFile = "token.txt"
                     val tokenContent = responseToken
                     File(filesDir, tokenFile).bufferedWriter().use { writer ->
                         writer.write(tokenContent)
                     }
+                    val intent = Intent(applicationContext, SignedInActivity::class.java)
+                    startActivity(intent)
                 } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailはありません") {
-                    status = "登録のないメールアドレスです。"
+                    aaa.text = "登録のないメールアドレスです。"
                 } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailもしくわpasswordが違います") {
-                    status = "メールアドレスもしくはパスワードが間違っています。"
+                    aaa.text = "メールアドレスもしくはパスワードが間違っています。"
                 } else {
-                    status = "ログイン失敗"
+                    aaa.text = "ログイン失敗"
                 }
             }
 
-            val intent = Intent(applicationContext, SignedInActivity::class.java)
-            intent.putExtra("status", status)
-            intent.putExtra("name", responseName)
-            intent.putExtra("bio", responseBio)
-            intent.putExtra("email", responseEmail)
-            startActivity(intent)
 
             return
         }
