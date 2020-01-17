@@ -7,4 +7,7 @@
     <string name="tv_password_confirmation">パスワード確認用</string>
     <string name="bt_sign_up">登録</string>
     <string name="tv_signed_up_title">登録完了</string>
+    <string name="bt_sign_in">ログイン</string>
+    <string name="tv_jump_to_sign_in">新規登録はこちら</string>
+    <string name="tv_signed_in_title">ログインされました</string>
 </resources>

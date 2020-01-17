@@ -12,45 +12,52 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
-class MainActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_sign_up)
     }
 
     fun onButtonClick(view: View) {
         val email = findViewById<EditText>(R.id.etEmail)
         val password = findViewById<EditText>(R.id.etPassword)
+        val passwordConfirmation = findViewById<EditText>(R.id.etPasswordConfirmation)
+        val name = findViewById<EditText>(R.id.etName)
+        val bio = findViewById<EditText>(R.id.etBio)
 
         val emailStr = email.text.toString()
         val passwordStr = password.text.toString()
+        val passwordConfirmationStr = passwordConfirmation.text.toString()
+        val nameStr = name.text.toString()
+        val bioStr = bio.text.toString()
 
         val receiver = SignUpReceiver()
-        receiver.execute(emailStr, passwordStr)
-    }
-
-    fun onLinkClick(view: View) {
-        val intent = Intent(applicationContext, SignUpActivity::class.java)
-        startActivity(intent)
+        receiver.execute(emailStr, passwordStr, passwordConfirmationStr, nameStr, bioStr)
     }
 
     private inner class SignUpReceiver() : AsyncTask<String, String, String>() {
         override fun doInBackground(vararg params: String): String {
-            var result= ""
+            var result = ""
             var urlConnection: HttpURLConnection? = null
 
             val paramsValue = JSONObject()
             val email = params[0]
             val password = params[1]
+            val passwordConfirmation = params[2]
+            val name = params[3]
+            val bio = params[4]
+            paramsValue.put("name", name)
+            paramsValue.put("bio", bio)
             paramsValue.put("email", email)
             paramsValue.put("password", password)
+            paramsValue.put("password_confirmation", passwordConfirmation)
             val bodyParameter = JSONObject()
-            bodyParameter.put("sign_in_user_params", paramsValue)
+            bodyParameter.put("sign_up_user_params", paramsValue)
 
-            val urlStr = "https://teachapi.herokuapp.com/sign_in"
+            val urlStr = "https://teachapi.herokuapp.com/sign_up"
             val url = URL(urlStr)
 
-            try{
+            try {
                 urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.connectTimeout = 100000
                 urlConnection.readTimeout = 100000
@@ -66,15 +73,14 @@ class MainActivity : AppCompatActivity() {
                 val inputStream = urlConnection.inputStream
                 result = is2String(inputStream)
                 inputStream.close()
-                Log.i("TimelineApiSuccess", result)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
 
                 val errorStream = urlConnection?.errorStream
                 result = is2String(errorStream)
                 errorStream?.close()
                 Log.i("TimelineApiError", result)
-            }finally {
+            } finally {
                 urlConnection?.disconnect()
                 return result
             }
@@ -91,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val rootJSON = JSONObject(result)
                 if (rootJSON.has("id")) {
-                    status = "ログイン完了"
+                    status = "登録完了"
                     responseName = rootJSON.getString("name")
                     responseBio = rootJSON.getString("bio")
                     responseEmail = rootJSON.getString("email")
@@ -101,16 +107,18 @@ class MainActivity : AppCompatActivity() {
                     File(filesDir, tokenFile).bufferedWriter().use { writer ->
                         writer.write(tokenContent)
                     }
-                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailはありません") {
-                    status = "登録のないメールアドレスです。"
-                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailもしくわpasswordが違います") {
-                    status = "メールアドレスもしくはパスワードが間違っています。"
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailは登録されている") {
+                    status = "登録済みのメールアドレスです。"
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString().contains("blank")) {
+                    status = "未入力の項目があります。"
+                } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString().contains("Password confirmation")) {
+                    status = "確認用パスワードが一致しません。"
                 } else {
-                    status = "ログイン失敗"
+                    status = "登録失敗"
                 }
             }
 
-            val intent = Intent(applicationContext, SignedInActivity::class.java)
+            val intent = Intent(applicationContext, SignedUpActivity::class.java)
             intent.putExtra("status", status)
             intent.putExtra("name", responseName)
             intent.putExtra("bio", responseBio)
