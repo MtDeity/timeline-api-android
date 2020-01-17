@@ -10,4 +10,8 @@
     <string name="bt_sign_in">ログイン</string>
     <string name="tv_jump_to_sign_in">新規登録はこちら</string>
     <string name="tv_signed_in_title">ログインされました</string>
+    <string name="tab_posts">投稿</string>
+    <string name="tab_users">ユーザー</string>
+    <string name="tab_chatrooms">チャット</string>
+    <string name="tab_profile">プロフィール</string>
 </resources>

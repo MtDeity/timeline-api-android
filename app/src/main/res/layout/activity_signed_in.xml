@@ -16,4 +16,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabPosts"
+            android:icon="@drawable/posts"
+            android:text="@string/tab_posts" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabUsers"
+            android:icon="@drawable/users"
+            android:text="@string/tab_users" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabChatrooms"
+            android:icon="@drawable/chatrooms"
+            android:text="@string/tab_chatrooms" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabHome"
+            android:icon="@drawable/profile"
+            android:text="@string/tab_profile" />
+    </com.google.android.material.tabs.TabLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

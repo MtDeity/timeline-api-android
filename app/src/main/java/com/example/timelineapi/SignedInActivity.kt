@@ -3,6 +3,7 @@ package com.example.timelineapi
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
 import java.io.File
 
 class SignedInActivity : AppCompatActivity() {
@@ -17,6 +18,8 @@ class SignedInActivity : AppCompatActivity() {
             }
         }
 
+//        val tabs = findViewById<TabLayout>(R.id.tabs)
+//        tabs.getTabAt(2)?.select()
         Log.i("TimelineApi", contents)
     }
 }
