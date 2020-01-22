@@ -82,10 +82,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String) {
-            val aaa = findViewById<TextView>(R.id.tvErrorMessage)
+            val error = findViewById<TextView>(R.id.tvErrorMessage)
 
             if (result == "") {
-                aaa.text = "通信エラー"
+                error.text = "通信エラー"
             } else {
                 val rootJSON = JSONObject(result)
                 if (rootJSON.has("id")) {
@@ -98,11 +98,11 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(applicationContext, SignedInActivity::class.java)
                     startActivity(intent)
                 } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailはありません") {
-                    aaa.text = "登録のないメールアドレスです。"
+                    error.text = "登録のないメールアドレスです。"
                 } else if (rootJSON.getJSONObject("error").getJSONArray("messages")[0].toString() == "そのemailもしくわpasswordが違います") {
-                    aaa.text = "メールアドレスもしくはパスワードが間違っています。"
+                    error.text = "メールアドレスもしくはパスワードが間違っています。"
                 } else {
-                    aaa.text = "ログイン失敗"
+                    error.text = "ログイン失敗"
                 }
             }
 
