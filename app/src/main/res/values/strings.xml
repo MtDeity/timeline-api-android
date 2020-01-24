@@ -13,5 +13,6 @@
     <string name="tab_posts">投稿</string>
     <string name="tab_users">ユーザー</string>
     <string name="tab_chatrooms">チャット</string>
-    <string name="tab_profile">プロフィール</string>
+    <string name="tab_profile">マイページ</string>
+    <string name="avatar">avatar</string>
 </resources>

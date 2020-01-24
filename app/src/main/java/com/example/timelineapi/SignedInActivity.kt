@@ -17,9 +17,8 @@ import java.net.URL
 
 
 class SignedInActivity : AppCompatActivity() {
-//    private lateinit var recyclerView: RecyclerView
-//    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-//    private lateinit var viewManager: RecyclerView.LayoutManager
+    val list = mutableListOf<Post>()
+    private lateinit var recycleViewAdapter: RecycleViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,22 +35,6 @@ class SignedInActivity : AppCompatActivity() {
 
         val receiver = ListReceiver()
         receiver.execute(token, page, limit, query)
-
-//        viewManager = LinearLayoutManager(this)
-//        viewAdapter = MyAdapter(myDataset)
-//
-//        recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-//            // use this setting to improve performance if you know that changes
-//            // in content do not change the layout size of the RecyclerView
-//            setHasFixedSize(true)
-//
-//            // use a linear layout manager
-//            layoutManager = viewManager
-//
-//            // specify an viewAdapter (see also next example)
-//            adapter = viewAdapter
-
-        }
     }
 
     private inner class ListReceiver : AsyncTask<String, String, String>() {
@@ -109,7 +92,6 @@ class SignedInActivity : AppCompatActivity() {
                 Log.i("SignedInActivity", "通信エラー")
             } else {
                 try {
-                    val list = mutableListOf<Post>()
                     val rootJSON = JSONArray(result)
                     for (i in 0 until rootJSON.length()) {
                         val post = rootJSON.getJSONObject(i)
@@ -120,7 +102,11 @@ class SignedInActivity : AppCompatActivity() {
 
                         list.add(Post(userId, userName, text, postedAt))
                     }
-                    Log.i("SignedInActivity", list[0].userName)
+
+                    findViewById<RecyclerView>(R.id.recycler_view).also { recyclerView: RecyclerView ->
+                        recyclerView.adapter = RecycleViewAdapter(list)
+                        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+                    }
                 } catch (e: Exception){
                     e.printStackTrace()
                     Log.i("SignedInActivity", "エラー")
@@ -139,11 +125,5 @@ class SignedInActivity : AppCompatActivity() {
         }
         reader.close()
         return sb.toString()
-    }
-
-    data class Post(val userId: Int, val userName: String, val text: String, val postedAt: String) {
-        init {
-            Log.i("SignedInActivity", "$userId, $userName, $text, $postedAt")
-        }
     }
 }

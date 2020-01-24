@@ -2,34 +2,21 @@ package com.example.timelineapi
 
 import android.content.Intent
 import android.os.AsyncTask
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
-class MainActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        try {
-            val token = File(filesDir, "token.txt").bufferedReader().useLines { lines ->
-                lines.fold("") { working, line ->
-                    line
-                }
-            }
-            val intent = Intent(applicationContext, TabLayoutActivity::class.java)
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.i("0124", "エラー")
-        }
     }
 
     fun onButtonClick(view: View) {
@@ -133,3 +120,4 @@ class MainActivity : AppCompatActivity() {
         return sb.toString()
     }
 }
+

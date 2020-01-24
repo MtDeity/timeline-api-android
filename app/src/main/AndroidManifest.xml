@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SignedUpActivity"></activity>
+        <activity android:name=".TabLayoutActivity"></activity>
+        <activity android:name=".SignInActivity" />
+        <activity android:name=".SignedUpActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignedInActivity" />
         <activity android:name=".MainActivity">
